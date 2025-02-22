@@ -1,23 +1,34 @@
-import { Table } from '~bob/components';
-import { useEntryColumns } from './hooks';
-import { useEntryData } from '~bob/hooks';
+import cx from 'clsx';
+import numeral from 'numeral';
+
+import { ArrowIcon, Table } from '~bob/components';
+import { EnumLastStatus, useQuoteData, useLastPrice } from '~bob/hooks';
+import { useQuoteColumns } from './hooks';
 import type { OrderBookProps } from './types';
 
 export default function OrderBook({ entryCount, orderCode }: OrderBookProps) {
-  const { asks, bids } = useEntryData(entryCount, orderCode);
-  const columns = useEntryColumns(entryCount);
+  const columns = useQuoteColumns(entryCount);
 
-  return (
-    <div className="flex flex-col flex-nowrap w-60">
+  const { asks, bids } = useQuoteData(entryCount, orderCode);
+  const { lastPrice, status } = useLastPrice(orderCode);
+
+  return !lastPrice || !asks.length || !bids.length ? null : (
+    <div className="container max-w-xs">
       <h1 className="text-typography text-lg">Order Book</h1>
 
       <Table
-        classes={{ thead: 'text-sm', row: 'hover:bg-content-hover' }}
+        classes={{ root: 'order-book' }}
         columns={columns}
         data={[...asks, ...bids]}
         summary={{
           rows: 8,
-          content: 'Summary',
+          content: (
+            <div className={cx('last-price', `status-${status}`)}>
+              {numeral(lastPrice).format('0,0.0')}
+
+              {EnumLastStatus.Neutral !== status && <ArrowIcon direction={status} />}
+            </div>
+          ),
         }}
       />
     </div>

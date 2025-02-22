@@ -1,0 +1,13 @@
+
+body {
+  background: var(--color-content-base);
+  color: var(--color-typography);
+
+  & > div#root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-variant-numeric: tabular-nums;
+    width: 100%;
+  }
+}

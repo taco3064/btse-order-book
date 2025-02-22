@@ -1,0 +1,9 @@
+svg[role="icon"] {
+  width: 1em;
+  height: 1em;
+  fill: none;
+  fill-rule: nonzero;
+  stroke: currentColor;
+  stroke-width: 4;
+  stroke-linecap: round;
+}

@@ -1,1 +1,2 @@
-export * from './useEntryData';
+export * from './useLastPrice';
+export * from './useQuoteData';

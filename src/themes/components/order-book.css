@@ -1,0 +1,69 @@
+
+@layer components {
+  .last-price {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: --spacing(2);
+    font-size: var(--text-2xl);
+
+    &.status-neutral {
+      background: var(--color-content-neutral);
+      color: var(--color-header);
+    }
+    &.status-down {
+      background: var(--color-content-down);
+      color: var(--color-price-ask);
+    }
+    &.status-up {
+      background: var(--color-content-up);
+      color: var(--color-price-bid);
+    }
+  }
+
+  table.order-book {
+
+    & th, & td {
+      padding: --spacing(1) 0;
+    }
+
+    & > thead {
+      font-size: var(--text-sm);
+
+      & th.price {
+        text-align: left;
+        width: 30%;
+      }
+      & th.size {
+        text-align: right;
+        width: 30%;
+      }
+      & th.total {
+        text-align: right;
+        width: 40%;
+      }
+    }
+
+    & > tbody {
+      font-size: var(--text-base);
+
+      & td.price {
+        text-align: left;
+        
+        &.type-ask {
+          color: var(--color-price-ask);
+        }
+        &.type-bid {
+          color: var(--color-price-bid);
+        }
+      }
+      & td.size {
+        text-align: right;
+      }
+      & td.total {
+        text-align: right;
+      }
+    }
+  }
+}
