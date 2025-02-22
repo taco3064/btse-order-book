@@ -1,9 +1,10 @@
 import { Table } from '~bob/components';
-import { useEntryColumns, useOrderSocket } from './hooks';
+import { useEntryColumns } from './hooks';
+import { useEntryData } from '~bob/hooks';
 import type { OrderBookProps } from './types';
 
-export default function OrderBook({ entryCount }: OrderBookProps) {
-  const { asks, bids } = useOrderSocket(entryCount);
+export default function OrderBook({ entryCount, orderCode }: OrderBookProps) {
+  const { asks, bids } = useEntryData(entryCount, orderCode);
   const columns = useEntryColumns(entryCount);
 
   return (
