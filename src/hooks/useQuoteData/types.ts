@@ -1,21 +1,23 @@
 import type { JsonObject } from 'type-fest';
 
-//* Enums
+//* 資料更新的動作
 export enum EnumQuoteAction {
-  SNAPSHOT = 'snapshot',
-  DELTA = 'delta',
+  SNAPSHOT = 'snapshot', // 初始取得
+  DELTA = 'delta', // 持續更新
 }
 
+//* 報價類型
 export enum EnumQuoteType {
-  ASK = 'ask',
-  BID = 'bid',
+  ASK = 'ask', // Sell
+  BID = 'bid', // Buy
 }
 
+//* 報價資料狀態
 export enum EnumQuoteStatus {
-  INIT = 'init',
-  NEW_PRICE = 'new',
-  SIZE_UP = 'up',
-  SIZE_DOWN = 'down',
+  INIT = 'init', // 初始匯入
+  NEW_PRICE = 'new', // 新加入之價格
+  SIZE_UP = 'up', // 數量增加
+  SIZE_DOWN = 'down', // 數量減少
 }
 
 //* Variables
@@ -29,20 +31,25 @@ export interface QuoteData extends JsonObject {
   size: number;
 }
 
-export interface QuoteAction {
+export interface QuoteMessage {
   type: EnumQuoteAction;
   seqNum: number;
   prevSeqNum: number;
-  asks: QuoteArray[]; //* Sell
-  bids: QuoteArray[]; //* Buy
+  asks: QuoteArray[];
+  bids: QuoteArray[];
 }
 
-export interface QuoteState {
+export interface ReducerState {
   seq: number;
   asks: QuoteData[];
   bids: QuoteData[];
+  maxRows: number;
   error: boolean;
 }
+
+export type ReducerAction = (QuoteMessage | { type: 'reset' }) & {
+  maxRows: number;
+};
 
 //* For Functions
 export interface GetQuoteInput {
@@ -55,6 +62,7 @@ export interface GetQuoteInput {
 export interface UpdateQuoteInput {
   seq: number;
   type: EnumQuoteType;
+  maxRows: number;
   prev: QuoteData[];
   curr: QuoteArray[];
 }

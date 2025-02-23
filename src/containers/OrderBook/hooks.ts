@@ -14,9 +14,9 @@ export function useQuoteColumns(
       label: 'Price (USD)',
       render: ({ price }) => numeral(price).format('0,0.0'),
       classes: {
-        cell: ({ seq, type, action }) =>
+        cell: ({ seq, type, status }) =>
           cx(type, {
-            new: seq === currSeq && action === EnumQuoteStatus.NEW_PRICE,
+            new: seq === currSeq && status === EnumQuoteStatus.NEW_PRICE,
           }),
       },
     },
@@ -25,10 +25,10 @@ export function useQuoteColumns(
       label: 'Size',
       render: ({ size }) => numeral(size).format('0,0'),
       classes: {
-        cell: ({ seq, action }) =>
+        cell: ({ seq, status }) =>
           cx({
-            up: seq === currSeq && action === EnumQuoteStatus.SIZE_UP,
-            down: seq === currSeq && action === EnumQuoteStatus.SIZE_DOWN,
+            up: seq === currSeq && status === EnumQuoteStatus.SIZE_UP,
+            down: seq === currSeq && status === EnumQuoteStatus.SIZE_DOWN,
           }),
       },
     },

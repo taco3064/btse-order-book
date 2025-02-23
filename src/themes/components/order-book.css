@@ -60,10 +60,10 @@
           text-align: left;
           
           &.ask {
-            color: var(--color-price-ask);
+            color: var(--color-price-sell);
           }
           &.bid {
-            color: var(--color-price-bid);
+            color: var(--color-price-buy);
           }
         }
         & > td.size {
