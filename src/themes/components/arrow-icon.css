@@ -1,0 +1,14 @@
+svg[role="icon"] {
+  &.down {
+    rotate: 0deg;
+  }
+  &.up {
+    rotate: 180deg;
+  }
+  &.left {
+    rotate: 90deg;
+  }
+  &.right {
+    rotate: 270deg;
+  }
+}

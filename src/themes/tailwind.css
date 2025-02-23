@@ -3,8 +3,10 @@
 @import "./components/global.css" important;
 @import "./components/container.css" important;
 @import "./components/icon.css" important;
-@import "./components/order-book.css" important;
 @import "./components/table.css" important;
+
+@import "./components/arrow-icon.css" important;
+@import "./components/order-book.css" important;
 
 @theme {
   --color-content-base: #131B29;

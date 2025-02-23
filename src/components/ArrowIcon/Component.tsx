@@ -6,7 +6,7 @@ export default function ArrowIcon({ className, direction }: ArrowIconProps) {
     <svg
       role="icon"
       xmlns="http://www.w3.org/2000/svg"
-      className={cx(`rotate-${direction === 'down' ? 0 : 180}`, className)}
+      className={cx(direction, className)}
       viewBox="0 0 24 24"
     >
       <line x1="12" y1="5" x2="12" y2="19" />
