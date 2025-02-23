@@ -3,7 +3,7 @@ import { useEffect, useReducer } from 'react';
 import { EnumQuoteAction, EnumQuoteStatus, EnumQuoteType } from './types';
 import type * as Types from './types';
 
-export function useQuoteData(maxRows: number, orderCode: string) {
+export function useQuoteSubscribe(maxRows: number, orderCode: string) {
   const [{ seq, asks, bids, error }, dispatch] = useQuoteReducer(maxRows);
 
   useEffect(() => {

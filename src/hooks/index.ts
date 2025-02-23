@@ -1,2 +1,2 @@
-export * from './useLastPrice';
-export * from './useQuoteData';
+export * from './useLastPriceSubscribe';
+export * from './useQuoteSubscribe';

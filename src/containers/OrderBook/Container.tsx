@@ -2,13 +2,19 @@ import cx from 'clsx';
 import numeral from 'numeral';
 
 import { ArrowIcon, Table } from '~bob/components';
-import { EnumLastStatus, EnumQuoteType, useQuoteData, useLastPrice } from '~bob/hooks';
 import { useQuoteColumns } from './hooks';
 import type { OrderBookProps } from './types';
 
+import {
+  EnumLastStatus,
+  EnumQuoteType,
+  useQuoteSubscribe,
+  useLastPriceSubscribe,
+} from '~bob/hooks';
+
 export default function OrderBook({ entryCount, orderCode }: OrderBookProps) {
-  const { seq, asks, bids } = useQuoteData(entryCount, orderCode);
-  const { lastPrice, status } = useLastPrice(orderCode);
+  const { seq, asks, bids } = useQuoteSubscribe(entryCount, orderCode);
+  const { lastPrice, status } = useLastPriceSubscribe(orderCode);
 
   const columns = useQuoteColumns(entryCount, seq, {
     [EnumQuoteType.ASK]: asks.reduce((acc, { size }) => acc + size, 0),

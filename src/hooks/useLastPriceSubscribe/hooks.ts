@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from 'react';
 import { EnumLastStatus, type LastPriceAction, type LastPriceState } from './types';
 
-export function useLastPrice(orderCode: string) {
+export function useLastPriceSubscribe(orderCode: string) {
   const [{ error, lastPrice, status }, dispatch] = useLastPriceReducer();
 
   useEffect(() => {
