@@ -2,11 +2,12 @@ import cx from 'clsx';
 import numeral from 'numeral';
 
 import type { ColumnConfig } from '~bob/components';
-import { EnumQuoteStatus, type QuoteData } from '~bob/hooks';
+import { EnumQuoteStatus, EnumQuoteType, type QuoteData } from '~bob/hooks';
 
 export function useQuoteColumns(
   entryCount: number,
   currSeq: number,
+  totals: Record<EnumQuoteType, number>,
 ): ColumnConfig<QuoteData>[] {
   return [
     {
@@ -36,10 +37,26 @@ export function useQuoteColumns(
       key: 'total',
       label: 'Total',
       render: ({ type, size }, i, arr) => {
-        const all =
-          type === 'ask' ? arr.slice(i + 1, entryCount) : arr.slice(entryCount, i);
+        const { [type]: total } = totals;
 
-        return numeral(all.reduce((acc, { size }) => acc + size, 0) + size).format('0,0');
+        const sum =
+          (type === 'ask'
+            ? arr.slice(i + 1, entryCount)
+            : arr.slice(entryCount, i)
+          ).reduce((acc, { size }) => acc + size, 0) + size;
+
+        return (
+          <div className="relative w-full h-full">
+            <div
+              className={cx('absolute', 'inset-y-0', 'right-0', {
+                'bg-content-down': type === EnumQuoteType.ASK,
+                'bg-content-up': type === EnumQuoteType.BID,
+              })}
+              style={{ width: `${(sum / total) * 100}%` }}
+            />
+            {numeral(sum).format('0,0')}
+          </div>
+        );
       },
     },
   ];
