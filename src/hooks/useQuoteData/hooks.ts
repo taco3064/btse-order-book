@@ -1,14 +1,14 @@
 import { useEffect, useReducer } from 'react';
-import type { QuoteAction, QuoteArray, QuoteData, QuoteState } from './types';
+
+import { EnumQuoteAction, EnumQuoteStatus, EnumQuoteType } from './types';
+import type * as Types from './types';
 
 export function useQuoteData(maxRows: number, orderCode: string) {
-  const [{ asks, bids, error }, dispatch] = useQuoteReducer();
+  const [{ seq, asks, bids, error }, dispatch] = useQuoteReducer();
 
   useEffect(() => {
     if (!error) {
       const socket = new WebSocket('wss://ws.btse.com/ws/oss/futures');
-
-      socket.onclose = () => dispatch('reset');
 
       socket.onopen = () =>
         socket.send(
@@ -19,25 +19,29 @@ export function useQuoteData(maxRows: number, orderCode: string) {
         );
 
       socket.onmessage = ({ data }) => {
-        const { data: action }: { data: QuoteAction } = JSON.parse(data);
+        const { data: action }: { data: Types.QuoteAction } = JSON.parse(data);
 
         if (action) {
           dispatch(action);
         }
       };
 
-      return () => socket.close();
+      return () => {
+        socket.close();
+        dispatch('reset');
+      };
     }
   }, [error, orderCode, dispatch]);
 
   return {
+    seq,
     asks: asks.slice(maxRows * -1),
     bids: bids.slice(0, maxRows),
   };
 }
 
 const useQuoteReducer = (() => {
-  function getInitState(): QuoteState {
+  function getInitState(): Types.QuoteState {
     return {
       seq: -1,
       asks: [],
@@ -46,74 +50,97 @@ const useQuoteReducer = (() => {
     };
   }
 
-  function getQuote(type: QuoteData['type'], [price, size]: QuoteArray): QuoteData {
+  function getQuote({
+    seq,
+    type,
+    quote: [price, size],
+    status = EnumQuoteStatus.INIT,
+  }: Types.GetQuoteInput): Types.QuoteData {
     return {
+      seq,
       type,
+      status,
       price: Number(price),
       size: Number(size),
     };
   }
 
-  function updateQuotes(
-    type: QuoteData['type'],
-    curr: QuoteData[],
-    arr: QuoteArray[], //* WebSocket 回傳的 Quote 更新紀錄
-  ) {
-    return arr.reduce(
-      (acc, quoteArray) => {
-        const { price, size } = getQuote(type, quoteArray);
+  function updateQuotes({ seq, type, prev, curr }: Types.UpdateQuoteInput) {
+    return curr.reduce((acc, quote) => {
+      const newQuote = getQuote({ seq, type, quote, status: EnumQuoteStatus.NEW_PRICE });
+      const { price, size } = newQuote;
 
-        if (size && price > acc[0]?.price) {
-          //* 新增的 Quote 有最高價格 (必須有 size)
-          acc.unshift({ type, price, size });
-        } else if (size && price < acc[acc.length - 1]?.price) {
-          //* 新增的 Quote 有最低價格 (必須有 size)
-          acc.push({ type, price, size });
-        } else {
-          //* 取得最新 Quote 應插入的位置
-          const index = acc.findIndex(
-            ({ price: p }, i) => p === price || (p > price && acc[i + 1]?.price < price),
-          );
+      if (size && price > acc[0]?.price) {
+        //* 新增的 Quote 有最高價格 (必須有 size)
+        acc.unshift(newQuote);
+      } else if (size && price < acc[acc.length - 1]?.price) {
+        //* 新增的 Quote 有最低價格 (必須有 size)
+        acc.push(newQuote);
+      } else {
+        //* 取得最新 Quote 應插入的位置
+        const index = acc.findIndex(
+          ({ price: p }, i) => p === price || (p > price && acc[i + 1]?.price < price),
+        );
 
-          if (size && acc[index]?.price !== price) {
-            //* 新增的 Quote (必須有 size)
-            acc.splice(index + 1, 0, { type, price, size });
-          } else if (!size && acc[index]?.price === price) {
-            //* 已存在的 Quote 且 size 為 0，則刪除
-            acc.splice(index, 1);
-          } else if (size) {
-            //* 更新已存在的 Quote (必須有 size)
-            acc[index] = { type, price, size };
-          }
+        if (size && acc[index]?.price !== price) {
+          //* 新增的 Quote (必須有 size)
+          acc.splice(index + 1, 0, newQuote);
+        } else if (!size && acc[index]?.price === price) {
+          //* 已存在的 Quote 且 size 為 0，則刪除
+          acc.splice(index, 1);
+        } else if (size && acc[index]?.size !== size) {
+          const prevQuote = acc[index];
+
+          //* 更新已存在的 Quote (必須有 size)
+          acc.splice(index, 1, {
+            ...newQuote,
+            action:
+              size > prevQuote.size ? EnumQuoteStatus.SIZE_UP : EnumQuoteStatus.SIZE_DOWN,
+          });
         }
+      }
 
-        return acc;
-      },
-      [...curr],
-    );
+      return acc;
+    }, prev);
   }
 
   return () =>
-    useReducer<QuoteState, [QuoteAction | 'reset']>((state, action) => {
+    useReducer<Types.QuoteState, [Types.QuoteAction | 'reset']>((state, action) => {
       const isReset = action === 'reset';
 
       if (!isReset) {
         const { type, seqNum, asks, bids } = action;
 
         switch (type) {
-          case 'snapshot':
+          case EnumQuoteAction.SNAPSHOT:
             //* 初始取得的 Quote 資料。已由大而小排序，所以前端只需要將 price / size 轉換成數字即可
             return {
               seq: seqNum,
               error: false,
-              asks: asks.map((ask) => getQuote('ask', ask)),
-              bids: bids.map((bid) => getQuote('bid', bid)),
+              asks: asks.map((quote) =>
+                getQuote({ type: EnumQuoteType.ASK, seq: seqNum, quote }),
+              ),
+              bids: bids.map((quote) =>
+                getQuote({ type: EnumQuoteType.BID, seq: seqNum, quote }),
+              ),
             };
 
-          case 'delta': {
+          case EnumQuoteAction.DELTA: {
             //* 持續更新的 Quote 資料
-            const newAsks = updateQuotes('ask', state.asks, asks);
-            const newBids = updateQuotes('bid', state.bids, bids);
+            const newAsks = updateQuotes({
+              type: EnumQuoteType.ASK,
+              seq: seqNum,
+              prev: state.asks,
+              curr: asks,
+            });
+
+            const newBids = updateQuotes({
+              type: EnumQuoteType.BID,
+              seq: seqNum,
+              prev: state.bids,
+              curr: bids,
+            });
+
             const lastAsk = newAsks[newAsks.length - 1];
             const firstBid = newBids[0];
 

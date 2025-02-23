@@ -48,21 +48,37 @@
     & > tbody {
       font-size: var(--text-base);
 
-      & td.price {
-        text-align: left;
-        
-        &.type-ask {
-          color: var(--color-price-ask);
+      & > tr {
+        &:has(> td.new.ask) {
+          background: var(--color-highlight-down) !important;
         }
-        &.type-bid {
-          color: var(--color-price-bid);
+        &:has(> td.new.bid) {
+          background: var(--color-highlight-up) !important;
         }
-      }
-      & td.size {
-        text-align: right;
-      }
-      & td.total {
-        text-align: right;
+
+        & > td.price {
+          text-align: left;
+          
+          &.ask {
+            color: var(--color-price-ask);
+          }
+          &.bid {
+            color: var(--color-price-bid);
+          }
+        }
+        & > td.size {
+          text-align: right;
+
+          &.down {
+            background: var(--color-highlight-down) !important;
+          }
+          &.up {
+            background: var(--color-highlight-up) !important;
+          }
+        }
+        & > td.total {
+          text-align: right;
+        }
       }
     }
   }

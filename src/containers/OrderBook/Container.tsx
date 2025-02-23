@@ -7,10 +7,10 @@ import { useQuoteColumns } from './hooks';
 import type { OrderBookProps } from './types';
 
 export default function OrderBook({ entryCount, orderCode }: OrderBookProps) {
-  const columns = useQuoteColumns(entryCount);
-
-  const { asks, bids } = useQuoteData(entryCount, orderCode);
+  const { seq, asks, bids } = useQuoteData(entryCount, orderCode);
   const { lastPrice, status } = useLastPrice(orderCode);
+
+  const columns = useQuoteColumns(entryCount, seq);
 
   return !lastPrice || !asks.length || !bids.length ? null : (
     <div className="container max-w-xs">

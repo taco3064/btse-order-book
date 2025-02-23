@@ -1,2 +1,2 @@
 export * from './hooks';
-export type { QuoteData } from './types';
+export { EnumQuoteAction, EnumQuoteType, EnumQuoteStatus, type QuoteData } from './types';

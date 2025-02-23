@@ -8,8 +8,6 @@ export function useLastPrice(orderCode: string) {
     if (!error) {
       const socket = new WebSocket('wss://ws.btse.com/ws/futures');
 
-      socket.onclose = () => dispatch('reset');
-
       socket.onopen = () =>
         socket.send(
           JSON.stringify({
@@ -26,7 +24,10 @@ export function useLastPrice(orderCode: string) {
         }
       };
 
-      return () => socket.close();
+      return () => {
+        socket.close();
+        dispatch('reset');
+      };
     }
   }, [error, orderCode, dispatch]);
 
