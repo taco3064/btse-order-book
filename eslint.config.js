@@ -55,4 +55,54 @@ export default tseslint.config(
       ],
     },
   },
+
+  //* Folder Structure Rules
+  {
+    files: ['src/components/**/*.ts', 'src/components/**/*.tsx'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['../../', '~bob/containers', '~bob/themes'],
+              message: 'This import violates project guidelines.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/containers/**/*.ts', 'src/containers/**/*.tsx'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['../../', '~bob/themes'],
+              message: 'This import violates project guidelines.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    files: ['src/hooks/**/*.ts', 'src/hooks/**/*.tsx'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['../../', '~bob/components', '~bob/containers'],
+              message: 'This import violates project guidelines.',
+            },
+          ],
+        },
+      ],
+    },
+  },
 );
