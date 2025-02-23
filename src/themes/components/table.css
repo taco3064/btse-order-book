@@ -1,5 +1,7 @@
 
 table {
+  border-collapse: separate;
+  border-spacing: 0 --spacing(0.5);
   width: 100%;
 
   & > tbody > tr:not(.summary-row):hover {
