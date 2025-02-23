@@ -12,11 +12,11 @@ import {
   useLastPriceSubscribe,
 } from '~bob/hooks';
 
-export default function OrderBook({ entryCount, orderCode }: OrderBookProps) {
-  const { seq, asks, bids } = useQuoteSubscribe(entryCount, orderCode);
+export default function OrderBook({ maxRows, orderCode }: OrderBookProps) {
+  const { seq, asks, bids } = useQuoteSubscribe(maxRows, orderCode);
   const { lastPrice, status } = useLastPriceSubscribe(orderCode);
 
-  const columns = useQuoteColumns(entryCount, seq, {
+  const columns = useQuoteColumns(maxRows, seq, {
     [EnumQuoteType.ASK]: asks.reduce((acc, { size }) => acc + size, 0),
     [EnumQuoteType.BID]: bids.reduce((acc, { size }) => acc + size, 0),
   });
@@ -30,7 +30,7 @@ export default function OrderBook({ entryCount, orderCode }: OrderBookProps) {
         columns={columns}
         data={[...asks, ...bids]}
         summary={{
-          rows: 8,
+          rows: maxRows,
           content: (
             <div className={cx('last-price', `status-${status}`)}>
               {!lastPrice ? <>&nbsp;</> : numeral(lastPrice).format('0,0.0')}

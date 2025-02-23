@@ -5,6 +5,6 @@ import { OrderBookList } from '~bob/containers';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <OrderBookList entryCount={8} orderCode="BTCPFC" />
+    <OrderBookList maxRows={8} orderCode="BTCPFC" />
   </StrictMode>,
 );

@@ -1,5 +1,5 @@
 //* Component Props
 export interface OrderBookProps {
-  entryCount: number;
+  maxRows: number;
   orderCode: string;
 }

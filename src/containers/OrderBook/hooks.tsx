@@ -5,7 +5,7 @@ import type { ColumnConfig } from '~bob/components';
 import { EnumQuoteStatus, EnumQuoteType, type QuoteData } from '~bob/hooks';
 
 export function useQuoteColumns(
-  entryCount: number,
+  maxRows: number,
   currSeq: number,
   totals: Record<EnumQuoteType, number>,
 ): ColumnConfig<QuoteData>[] {
@@ -40,20 +40,22 @@ export function useQuoteColumns(
         const { [type]: total } = totals;
 
         const sum =
-          (type === 'ask'
-            ? arr.slice(i + 1, entryCount)
-            : arr.slice(entryCount, i)
-          ).reduce((acc, { size }) => acc + size, 0) + size;
+          size +
+          (type === 'ask' ? arr.slice(i + 1, maxRows) : arr.slice(maxRows, i)).reduce(
+            (acc, { size }) => acc + size,
+            0,
+          );
 
         return (
-          <div className="relative w-full h-full">
+          <div className="accum-total-size">
             <div
-              className={cx('absolute', 'inset-y-0', 'right-0', {
+              className={cx('bar', {
                 'bg-content-down': type === EnumQuoteType.ASK,
                 'bg-content-up': type === EnumQuoteType.BID,
               })}
               style={{ width: `${(sum / total) * 100}%` }}
             />
+
             {numeral(sum).format('0,0')}
           </div>
         );
