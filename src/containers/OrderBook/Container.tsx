@@ -15,7 +15,7 @@ export default function OrderBook({ entryCount, orderCode }: OrderBookProps) {
     [EnumQuoteType.BID]: bids.reduce((acc, { size }) => acc + size, 0),
   });
 
-  return !lastPrice || !asks.length || !bids.length ? null : (
+  return (
     <div className="container max-w-xs">
       <h1 className="text-typography text-lg">Order Book</h1>
 
@@ -27,7 +27,7 @@ export default function OrderBook({ entryCount, orderCode }: OrderBookProps) {
           rows: 8,
           content: (
             <div className={cx('last-price', `status-${status}`)}>
-              {numeral(lastPrice).format('0,0.0')}
+              {!lastPrice ? <>&nbsp;</> : numeral(lastPrice).format('0,0.0')}
 
               {EnumLastStatus.Neutral !== status && <ArrowIcon direction={status} />}
             </div>
