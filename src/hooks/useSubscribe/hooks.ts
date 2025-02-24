@@ -10,6 +10,7 @@ export function useSubscribe<T>(
   useImperativeHandle(onMessageRef, () => onMessage, [onMessage]);
 
   useEffect(() => {
+    // TODO - onerror 相關的資訊不足，暫不增加相關處理
     const socket = new WebSocket(url);
 
     socket.onopen = () => socket.send(JSON.stringify({ op: 'subscribe', args: [key] }));
