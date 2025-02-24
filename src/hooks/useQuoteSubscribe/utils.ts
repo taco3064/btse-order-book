@@ -58,9 +58,11 @@ export function reducer(
         curr: bids,
       });
 
-      const lastAsk = newAsks[newAsks.length - 1];
-      const firstBid = newBids[0];
-      const error = seqNum - state.seq !== 1 || lastAsk.price < firstBid.price;
+      const error =
+        seqNum - state.seq !== 1 || //? seq 是否連續
+        newAsks.length < maxRows || //? asks 是否不足 maxRows
+        newBids.length < maxRows || //? bids 是否不足 maxRows
+        newAsks[newAsks.length - 1].price < newBids[0].price; //? asks 最低價格是否小於 bids 最高價格
 
       return {
         uid: !error ? state.uid : nanoid(),
@@ -107,31 +109,35 @@ function updateQuotes({ seq, type, maxRows, prev, curr }: UpdateQuoteInput) {
       if (size && price > acc[0]?.price) {
         //* 新增的 Quote 有最高價格 (必須有 size)
         acc.unshift(newQuote);
+
+        return acc;
       } else if (size && price < acc[acc.length - 1]?.price) {
         //* 新增的 Quote 有最低價格 (必須有 size)
         acc.push(newQuote);
-      } else {
-        //* 取得最新 Quote 應插入的位置
-        const index = acc.findIndex(
-          ({ price: p }, i) => p === price || (p > price && acc[i + 1]?.price < price),
-        );
 
-        if (!size && acc[index]?.price === price) {
-          //* 已存在的 Quote 且 size 為 0，則刪除
-          acc.splice(index, 1);
-        } else if (size && acc[index]?.price !== price) {
-          //* 新增的 Quote (必須有 size)
-          acc.splice(index + 1, 0, newQuote);
-        } else if (size && acc[index]?.size !== size) {
-          const prevQuote = acc[index];
+        return acc;
+      }
 
-          //* 更新已存在的 Quote (必須有 size)
-          acc.splice(index, 1, {
-            ...newQuote,
-            status:
-              size > prevQuote.size ? EnumQuoteStatus.SIZE_UP : EnumQuoteStatus.SIZE_DOWN,
-          });
-        }
+      //* 取得最新 Quote 應插入的位置
+      const index = acc.findIndex(
+        ({ price: p }, i) => p === price || (p > price && acc[i + 1]?.price < price),
+      );
+
+      if (!size && acc[index]?.price === price) {
+        //* 已存在的 Quote 且 size 為 0，則刪除
+        acc.splice(index, 1);
+      } else if (size && acc[index]?.price !== price) {
+        //* 新增的 Quote (必須有 size)
+        acc.splice(index + 1, 0, newQuote);
+      } else if (size && acc[index]?.size !== size) {
+        const prevQuote = acc[index];
+
+        //* 更新已存在的 Quote (必須有 size)
+        acc.splice(index, 1, {
+          ...newQuote,
+          status:
+            size > prevQuote.size ? EnumQuoteStatus.SIZE_UP : EnumQuoteStatus.SIZE_DOWN,
+        });
       }
 
       return acc;
