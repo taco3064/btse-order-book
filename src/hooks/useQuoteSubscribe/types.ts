@@ -40,11 +40,11 @@ export interface QuoteMessage {
 }
 
 export interface ReducerState {
+  uid: string;
   seq: number;
   asks: QuoteData[];
   bids: QuoteData[];
   maxRows: number;
-  error: boolean;
 }
 
 export interface ReducerAction extends QuoteMessage {

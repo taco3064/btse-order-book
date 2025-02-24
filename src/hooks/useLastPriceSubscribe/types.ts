@@ -9,7 +9,7 @@ export type ReducerAction = {
 }[];
 
 export type ReducerState = {
-  error: boolean;
+  uid: string;
   lastPrice: number;
   status: EnumLastStatus;
 };

@@ -1,13 +1,18 @@
-import { useEffect, useImperativeHandle, useRef, type DependencyList } from 'react';
-import type { WebSocketInput } from './types';
+import { useEffect, useImperativeHandle, useRef } from 'react';
+import type { JsonPrimitive } from 'type-fest';
+
+import type { SubscribeConfig } from './types';
 
 export function useSubscribe<T>(
-  { url, key, onMessage }: WebSocketInput<T>,
-  deps: DependencyList,
+  config: () => SubscribeConfig<T>,
+  deps: JsonPrimitive[] = [],
 ) {
-  const onMessageRef = useRef(onMessage);
+  const { uid, url, key } = config();
 
-  useImperativeHandle(onMessageRef, () => onMessage, [onMessage]);
+  const configRef = useRef(config);
+  const depsString = JSON.stringify(deps);
+
+  useImperativeHandle(configRef, () => config, [config]);
 
   useEffect(() => {
     // TODO - onerror 相關的資訊不足，暫不增加相關處理
@@ -16,14 +21,14 @@ export function useSubscribe<T>(
     socket.onopen = () => socket.send(JSON.stringify({ op: 'subscribe', args: [key] }));
 
     socket.onmessage = ({ data }) => {
+      const { onMessage } = configRef.current();
       const { data: content }: { data: T } = JSON.parse(data);
 
       if (content) {
-        onMessageRef.current?.(content);
+        onMessage(content);
       }
     };
 
     return () => socket.close();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [url, key, ...deps]);
+  }, [uid, url, key, depsString]);
 }

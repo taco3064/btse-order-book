@@ -5,18 +5,16 @@ import { getInitState, reducer } from './utils';
 import type { QuoteMessage } from './types';
 
 export function useQuoteSubscribe(maxRows: number, orderCode: string) {
-  const [{ seq, asks, bids, error }, dispatch] = useReducer(
-    reducer,
-    getInitState(maxRows),
-  );
+  const [{ uid, seq, asks, bids }, dispatch] = useReducer(reducer, getInitState(maxRows));
 
   useSubscribe<QuoteMessage>(
-    {
+    () => ({
+      uid,
       url: 'wss://ws.btse.com/ws/oss/futures',
       key: `update:${orderCode}`,
       onMessage: (action) => dispatch({ ...action, maxRows }),
-    },
-    [error, maxRows, orderCode],
+    }),
+    [maxRows],
   );
 
   return { seq, asks, bids };

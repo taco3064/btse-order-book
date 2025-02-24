@@ -5,16 +5,14 @@ import { useSubscribe } from '../useSubscribe';
 import type { ReducerAction } from './types';
 
 export function useLastPriceSubscribe(orderCode: string) {
-  const [{ error, lastPrice, status }, dispatch] = useReducer(reducer, getInitState());
+  const [{ uid, lastPrice, status }, dispatch] = useReducer(reducer, getInitState());
 
-  useSubscribe<ReducerAction>(
-    {
-      url: 'wss://ws.btse.com/ws/futures',
-      key: `tradeHistoryApi:${orderCode}`,
-      onMessage: (action) => dispatch(action),
-    },
-    [error, orderCode],
-  );
+  useSubscribe<ReducerAction>(() => ({
+    uid,
+    url: 'wss://ws.btse.com/ws/futures',
+    key: `tradeHistoryApi:${orderCode}`,
+    onMessage: dispatch,
+  }));
 
   return {
     lastPrice: lastPrice <= 0 ? null : lastPrice,

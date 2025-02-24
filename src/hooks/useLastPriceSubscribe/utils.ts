@@ -1,22 +1,23 @@
+import { nanoid } from 'nanoid';
 import { EnumLastStatus, type ReducerState, type ReducerAction } from './types';
 
 export function getInitState(): ReducerState {
   return {
+    uid: nanoid(),
     lastPrice: -1,
     status: EnumLastStatus.Neutral,
-    error: false,
   };
 }
 
-export function reducer(state: ReducerState, action: ReducerAction) {
+export function reducer(state: ReducerState, action: ReducerAction): ReducerState {
   switch (state.lastPrice) {
     case -1: {
       const [{ price: lastPrice }, { price: prevPrice }] = action;
 
       return {
+        uid: state.uid,
         lastPrice,
         status: getStatus(lastPrice, prevPrice),
-        error: false,
       };
     }
 
@@ -25,9 +26,9 @@ export function reducer(state: ReducerState, action: ReducerAction) {
         const [{ price: lastPrice }] = action;
 
         return {
+          uid: state.uid,
           lastPrice,
           status: getStatus(lastPrice, state.lastPrice),
-          error: false,
         };
       } catch (e) {
         console.error(e);

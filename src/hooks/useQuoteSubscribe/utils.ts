@@ -1,3 +1,5 @@
+import { nanoid } from 'nanoid';
+
 import {
   EnumQuoteAction,
   EnumQuoteStatus,
@@ -11,25 +13,25 @@ import {
 
 export function getInitState(maxRows: number): ReducerState {
   return {
+    uid: nanoid(),
     seq: -1,
     asks: [],
     bids: [],
     maxRows,
-    error: false,
   };
 }
 
 export function reducer(
   state: ReducerState,
   { maxRows, type, seqNum, asks, bids }: ReducerAction,
-) {
+): ReducerState {
   switch (type) {
     case EnumQuoteAction.SNAPSHOT:
       //* 初始取得的 Quote 資料。已由大而小排序，所以前端只需要將 price / size 轉換成數字即可
       return {
+        uid: state.uid,
         seq: seqNum,
         maxRows,
-        error: false,
         asks: asks
           .slice(maxRows * -1)
           .map((quote) => getQuote({ type: EnumQuoteType.ASK, seq: seqNum, quote })),
@@ -58,11 +60,12 @@ export function reducer(
 
       const lastAsk = newAsks[newAsks.length - 1];
       const firstBid = newBids[0];
+      const error = seqNum - state.seq !== 1 || lastAsk.price < firstBid.price;
 
       return {
+        uid: !error ? state.uid : nanoid(),
         seq: seqNum,
         maxRows,
-        error: seqNum - state.seq !== 1 || lastAsk.price < firstBid.price,
         asks: newAsks,
         bids: newBids,
       };
