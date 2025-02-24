@@ -4,11 +4,11 @@ export enum EnumLastStatus {
   Up = 'up',
 }
 
-export type LastPriceAction = {
+export type ReducerAction = {
   price: number;
 }[];
 
-export type LastPriceState = {
+export type ReducerState = {
   error: boolean;
   lastPrice: number;
   status: EnumLastStatus;

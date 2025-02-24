@@ -47,9 +47,9 @@ export interface ReducerState {
   error: boolean;
 }
 
-export type ReducerAction = (QuoteMessage | { type: 'reset' }) & {
+export interface ReducerAction extends QuoteMessage {
   maxRows: number;
-};
+}
 
 //* For Functions
 export interface GetQuoteInput {
