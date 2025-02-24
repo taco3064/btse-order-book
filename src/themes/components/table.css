@@ -11,4 +11,17 @@ table {
   & th {
     color: var(--color-header);
   }
+
+  &.animate-pulse td {
+    padding-left: --spacing(2);
+    padding-right: --spacing(2);
+
+    & > div.skeleton {
+      background: var(--color-content-neutral);
+      border-radius: calc(infinity * 1px);
+      width: 100%;
+      height: --spacing(3);
+      margin: --spacing(1.5) 0;
+    }
+  }
 }

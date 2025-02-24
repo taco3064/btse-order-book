@@ -29,6 +29,8 @@ export default function OrderBook({ maxRows, orderCode }: OrderBookProps) {
         classes={{ root: 'order-book' }}
         columns={columns}
         data={[...asks, ...bids]}
+        loading={!asks.length && !bids.length}
+        skeletonRows={maxRows * 2}
         summary={{
           rows: maxRows,
           content: (

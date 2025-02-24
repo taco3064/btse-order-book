@@ -7,17 +7,29 @@ export default function Table<T extends JsonObject>({
   classes,
   columns,
   data,
+  loading = false,
+  skeletonRows = 3,
   summary,
 }: TableProps<T>) {
-  const rows = data?.map((rowData, i) => (
-    <tr key={i} className={classes?.row}>
-      {columns.map(({ key, classes, fieldName, render }) => (
-        <td key={key} className={cx(key, classes?.cell?.(rowData, i, data))}>
-          {render?.(rowData, i, data) || _get(rowData, fieldName || [])}
-        </td>
-      ))}
-    </tr>
-  ));
+  const rows = loading
+    ? Array.from({ length: skeletonRows }).map((_, i) => (
+        <tr key={i} className={classes?.row}>
+          {columns.map(({ key }) => (
+            <td key={key} className={key}>
+              <div className="skeleton" />
+            </td>
+          ))}
+        </tr>
+      ))
+    : data?.map((rowData, i) => (
+        <tr key={i} className={classes?.row}>
+          {columns.map(({ key, classes, fieldName, render }) => (
+            <td key={key} className={cx(key, classes?.cell?.(rowData, i, data))}>
+              {render?.(rowData, i, data) || _get(rowData, fieldName || [])}
+            </td>
+          ))}
+        </tr>
+      ));
 
   if (summary) {
     rows?.splice(
@@ -30,7 +42,7 @@ export default function Table<T extends JsonObject>({
   }
 
   return (
-    <table className={classes?.root}>
+    <table className={cx(classes?.root, { 'animate-pulse': loading })}>
       <thead className={classes?.thead}>
         <tr>
           {columns.map(({ key, label, classes }) => (

@@ -20,6 +20,8 @@ export interface TableProps<T extends JsonObject> {
   classes?: Classes<'root' | 'row' | 'tbody' | 'thead'>;
   columns: ColumnConfig<T>[];
   data?: T[];
+  loading?: boolean;
+  skeletonRows?: number;
 
   summary?: {
     rows?: number;
