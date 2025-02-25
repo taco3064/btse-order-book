@@ -36,4 +36,14 @@ This project follows a structured approach for organizing files and components:<
 ## Demo
 
 Check out the live demo here:<br/>
-**[BTSE Order Book | Github Page](https://taco3064.github.io/btse-order-book/)**
+**[BTSE Order Book | Github Page](https://taco3064.github.io/btse-order-book/)**<br/>
+
+This project uses **GitHub Actions** for CI/CD.  
+Whenever changes are pushed to the `main` branch, the following steps are executed automatically:
+
+1. **Install Dependencies**: Runs `npm ci` to ensure a clean environment.
+2. **Lint & Type Check**: Runs `eslint` and `tsc` to maintain code quality.
+3. **Build the Project**: Uses Vite to generate the production build.
+4. **Deploy to GitHub Pages**: The built files are published to GitHub Pages for hosting.
+
+This ensures that every deployment is automated and runs smoothly without manual intervention.
