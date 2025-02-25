@@ -18,6 +18,16 @@ This project is built using:
 - **TypeScript** 🦕 - Ensuring type safety and better developer experience
 - **Tailwind CSS** 🎨 - Utility-first CSS framework for styling
 
+## Code Quality & Git Hooks
+
+This project uses **Husky** to enforce code quality at commit time.  
+Before each commit, the following checks run automatically:
+
+- **ESLint**: Ensures code follows best practices and coding standards.
+- **TypeScript Compiler (`tsc`)**: Ensures type safety and prevents type errors.
+
+If any check fails, the commit will be blocked until the issues are fixed.
+
 ## Folder Structure
 
 This project follows a structured approach for organizing files and components:<br/>
