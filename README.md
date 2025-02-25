@@ -1,6 +1,7 @@
 # BTSE Order Book
 
-A real-time order book built with React, displaying buy and sell quotes dynamically.
+A real-time order book built with React, displaying buy and sell quotes dynamically.<br/><br/>
+![Deploy Status](https://github.com/taco3064/btse-order-book/actions/workflows/deploy.yml/badge.svg)
 
 ## Getting Started
 
