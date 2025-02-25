@@ -18,7 +18,7 @@ This project is built using:
 - **TypeScript** 🦕 - Ensuring type safety and better developer experience
 - **Tailwind CSS** 🎨 - Utility-first CSS framework for styling
 
-## Code Quality & Git Hooks
+## Code Quality
 
 This project uses **Husky** to enforce code quality at commit time.  
 Before each commit, the following checks run automatically:
@@ -28,10 +28,13 @@ Before each commit, the following checks run automatically:
 
 If any check fails, the commit will be blocked until the issues are fixed.
 
-## Folder Structure
+## Guidelines
 
 This project follows a structured approach for organizing files and components:<br/>
-**[Folder Structure Guideline | Notion](https://lofty-find-5f1.notion.site/Folder-Structure-React-17006b644a208055b985eaa25886a051?pvs=4)**
+**[Folder Structure Guideline | Notion](https://lofty-find-5f1.notion.site/Folder-Structure-React-17006b644a208055b985eaa25886a051?pvs=4)**<br/>
+
+To maintain a consistent commit history, this project uses **Commitizen**.  
+All commits should follow a standardized format. Please use the following command to commit your changes: `npm run commit`
 
 ## Demo
 
@@ -42,7 +45,7 @@ This project uses **GitHub Actions** for CI/CD.
 Whenever changes are pushed to the `main` branch, the following steps are executed automatically:
 
 1. **Install Dependencies**: Runs `npm ci` to ensure a clean environment.
-2. **Lint & Type Check**: Runs `eslint` and `tsc` to maintain code quality.
+2. **Lint & Type Check**: Runs `lint` and `tsc` to maintain code quality.
 3. **Build the Project**: Uses Vite to generate the production build.
 4. **Deploy to GitHub Pages**: The built files are published to GitHub Pages for hosting.
 
