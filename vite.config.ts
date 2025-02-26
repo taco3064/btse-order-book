@@ -9,4 +9,7 @@ import { name } from './package.json';
 export default defineConfig({
   base: process.env.NODE_ENV !== 'production' ? '/' : `/${name}`,
   plugins: [react(), tsconfigPaths(), tailwindcss()],
+  server: {
+    open: true,
+  },
 });
