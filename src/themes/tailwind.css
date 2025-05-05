@@ -1,26 +1,26 @@
-@import "tailwindcss" important;
+@import 'tailwindcss' important;
 
-@import "./components/global.css" important;
-@import "./components/container.css" important;
-@import "./components/icon.css" important;
-@import "./components/table.css" important;
+@import './components/global.css' important;
+@import './components/container.css' important;
+@import './components/icon.css' important;
+@import './components/table.css' important;
 
-@import "./components/arrow-icon.css" important;
-@import "./components/order-book.css" important;
+@import './components/arrow-icon.css' important;
+@import './components/order-book.css' important;
 
 @theme {
-  --color-content-base: #131B29;
+  --color-content-base: #131b29;
   --color-content-down: rgba(255, 90, 90, 0.12);
   --color-content-up: rgba(16, 186, 104, 0.12);
   --color-content-neutral: rgba(134, 152, 170, 0.12);
-  --color-content-hover: #1E3059;
+  --color-content-hover: #1e3059;
 
   --color-highlight-down: rgba(255, 91, 90, 0.5);
   --color-highlight-up: rgba(0, 177, 93, 0.5);
 
-  --color-price-sell: #FF5B5A;
-  --color-price-buy: #00B15D;
+  --color-price-sell: #ff5b5a;
+  --color-price-buy: #00b15d;
 
-  --color-header: #8698AA;
-  --color-typography: #F0F4F8;
+  --color-header: #8698aa;
+  --color-typography: #f0f4f8;
 }
