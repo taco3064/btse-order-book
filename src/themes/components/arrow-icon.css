@@ -1,4 +1,4 @@
-svg[role="icon"] {
+svg[role='icon'] {
   &.down {
     rotate: 0deg;
   }
